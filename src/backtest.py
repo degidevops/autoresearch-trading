@@ -15,7 +15,13 @@ LOGS_DIR = Path(os.getenv("LOGS_DIR", "/home/degi/autoresearch-trading/logs"))
 def _call_llm(prompt: str) -> str:
     provider = os.getenv("LLM_PROVIDER", "hermes").lower()
     if provider == "hermes":
-        from hermes_tools import delegate_task
+        try:
+            from hermes_tools import delegate_task
+        except ImportError as e:
+            raise RuntimeError(
+                "LLM_PROVIDER=hermes requires running inside Hermes Agent. "
+                "Set LLM_PROVIDER=local or openai to run standalone."
+            ) from e
         result = delegate_task(
             goal="Analisis riset trading dan berikan output yang diminta.",
             context=prompt
