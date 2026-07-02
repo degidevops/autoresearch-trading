@@ -58,9 +58,12 @@ def load_data() -> pd.DataFrame:
     if not DATA_PATH.is_file():
         raise FileNotFoundError(f"Data file not found: {DATA_PATH}")
     df = pd.read_parquet(DATA_PATH)
-    df = df.sort_index()
-    idx = pd.to_datetime(df.index)
-    return df.set_index(idx)
+    if 'timestamp' in df.columns:
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df = df.set_index('timestamp')
+    else:
+        df.index = pd.to_datetime(df.index)
+    return df.sort_index()
 
 def compute_metrics(equity_curve: pd.Series, timestamps: pd.DatetimeIndex) -> dict:
     returns = equity_curve.pct_change().fillna(0)
