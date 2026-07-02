@@ -13,7 +13,7 @@ DATA_PATH = Path(os.getenv("DATA_PATH", "/home/degi/autoresearch-trading/data/XA
 LOGS_DIR = Path(os.getenv("LOGS_DIR", "/home/degi/autoresearch-trading/logs"))
 
 def _call_llm(prompt: str) -> str:
-    provider = os.getenv("LLM_PROVIDER", "openai").lower()
+    provider = os.getenv("LLM_PROVIDER", "hermes").lower()
     if provider == "hermes":
         from hermes_tools import delegate_task
         result = delegate_task(
