@@ -15,23 +15,6 @@ LOGS_DIR = Path(os.getenv("LOGS_DIR", "/home/degi/autoresearch-trading/logs"))
 def _call_llm(prompt: str) -> str:
     provider = os.getenv("LLM_PROVIDER", "auto").lower()
     
-    # Auto-detect: if hermes_tools is available, use Hermes regardless of env var
-    if provider == "auto" or provider == "hermes":
-        try:
-            from hermes_tools import delegate_task
-            result = delegate_task(
-                goal="Analisis riset trading dan berikan output yang diminta.",
-                context=prompt
-            )
-            return result[0]
-        except ImportError:
-            if provider == "hermes":
-                raise RuntimeError(
-                    "LLM_PROVIDER=hermes requires running inside Hermes Agent. "
-                    "Set LLM_PROVIDER=local or openai to run standalone."
-                )
-            # Fall through to other providers if auto-detect fails
-    
     if provider in ("local", "auto"):
         from llama_cpp import Llama
         model_path = os.getenv("LOCAL_MODEL_PATH", "/content/model.gguf")

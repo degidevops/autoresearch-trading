@@ -7,7 +7,9 @@ Implementasi **Adaptive‑Timeframe Observation (AMT)** dengan metodologi **Karp
 ```
 autoresearch-trading/
 ├─ src/
-│   ├─ backtest.py       # Engine backtest (supports Hermes, API, Local LLM)
+│   ├─ backtest.py       # Engine backtest + _call_llm(...)
+│  │                        # LLM modes: local | openai | anthropic
+│  │                        # Hermes mode: use Hermes/agent to drive/run it
 │   ├─ model_factory.py  # Model ML (Auto-Architected by LLM)
 │   ├─ orchestrator.py   # Autonomous evolution loop
 │   └─ audit.py          # Auditor agent
@@ -16,21 +18,29 @@ autoresearch-trading/
 └─ ...
 ```
 
+## 🧠 3 Opsi LLM
+| Opsi | Cara pakai |
+|------|-----------|
+| `local` | Isi `.env` → jalankan `python -m src.orchestrator` |
+| API: `openai` / `anthropic` | Isi `.env` → jalankan `python -m src.orchestrator` |
+| **Hermes sebagai agent/driver** | Jalankan dari dalam Hermes/Telegram/DM/agent; Hermes menjalankan orchestrator sebagai agent, bukan sebagai modul impor |
+
 ## 🚀 Cara Menjalankan
 
-### Lokal
-1. Install `llama-cpp-python` jika ingin mode lokal.
-2. Set provider:
+### Lokal / Colab
+1. Install dependensi.
+2. Salin `.env.example` ke `.env`.
+3. Set `LLM_PROVIDER=local` atau `openai`/`anthropic`.
+4. Jalankan:
    ```bash
-   export LLM_PROVIDER=local
-   export LOCAL_MODEL_PATH=/path/to/model.gguf
    python -m src.orchestrator
    ```
 
-### Google Colab
-1. Gunakan `src/setup_colab.py` untuk menginstal dependensi.
-2. Set environment variables.
-3. Jalankan `python -m src.orchestrator`.
+### Hermes sebagai Agent
+Jalankan dari dalam Hermes:
+- Gunakan Hermes untuk mengeksekusi langkah orchestrator sebagai tool/terminal,
+  atau kirim melalui alat terminal terintegrasi Hermes.
+- File yang berubah adalah `src/model_factory.py` saja, lalu verifikasi + git commit.
 
 ---
 *Repo ini adalah mesin riset trading otonom yang terus meng-optimalkan model ML-nya sendiri.*

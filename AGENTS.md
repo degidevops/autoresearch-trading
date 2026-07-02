@@ -17,10 +17,21 @@ This repository implements a **Full Autonomous ML Evolution** loop following the
 ---
 
 ## 2. Supported LLM Providers
-The `LLM_PROVIDER` environment variable controls which engine drives the evolution:
-- `hermes`: Uses internal Hermes agent tools (context-aware).
-- `openai` / `anthropic`: Uses external API (stable).
-- `local`: Uses GGUF model via `llama-cpp-python` (private, free).
+The `LLM_PROVIDER` environment variable controls **how the research/evolution agent is served**.
+The project has **3 operational modes**:
+
+| Mode | Value | Behavior |
+|------|-------|----------|
+| Local LLM | `local` | Uses `llama-cpp-python` against a local GGUF model. |
+| External API LLM | `openai` or `anthropic` | Uses REST API with `LLM_API_KEY`. |
+| Hermes Agent | Hermes as agent/driver | Run the orchestrator/workflow from inside Hermes. Do NOT set `LLM_PROVIDER=hermes` in code. |
+
+Notes:
+- `LLM_PROVIDER=auto` prefers `local`, then `openai`.
+- When running under Hermes: Hermes is the agent, so execution is not `hermes_tools` importable inside `_call_llm`.
+- `local` or API modes remain defaults for Colab/standalone execution.
+- Hermes implements `src/model_factory.py` features and verifies via backtest; no module-side Hermes import is required.
+- `LLM_PROVIDER=hermes` is intentionally not implemented inside `_call_llm`; use Hermes as the agent driver instead.
 
 ---
 
